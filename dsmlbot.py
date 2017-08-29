@@ -5,6 +5,11 @@
 #======================================
 from flask import Flask, request, jsonify
 from answer import *
+main_msg={"message":{"text":"무엇이 궁금하세요?"},"keyboard":{"type":"buttons","buttons":[
+    AboutAnswer.answer_marker,
+    ProgramAnswer.answer_marker,
+    InfoAnswer.answer_marker,
+    FunAnswer.answer_marker]}}
 app = Flask(__name__)
 # ----- INTERFACE ------
 def getAnswer(question):
@@ -23,23 +28,19 @@ def hello_world():
 # ----- SINEAGE ------
 @app.route('/keyboard')
 def Keyboard():
-    dataSend = {
-        "type": "buttons",
-        "buttons": ["안녕하세요"]
-    }
-    return jsonify(dataSend)
+    return jsonify(main_msg)
 # ----- MSG PASSED BY AZURE -----
 @app.route('/message', methods=['POST'])
 def Message():
     dataReceive = request.get_json()
-    # 챗봇 구현부
-    
-    
-    #dataSend로 만들어서 보내야 함
+    content = dataReceive['content']
+    sign_board_1=[AboutAnswer(content),ProgramAnswer(content),InfoAnswer(content),FunAnswer(content)]
+    check_1=list(lambda x:x.evaluate(),sign_board_1)
+    try:
+        obj = sign_board_1[check_1.index(True)]
+        dataSend=obj.send_keyboard(getAnswer(obj.answer_marker))
+    except ValueError:
+        dataSend=main_msg
     return jsonify(dataSend)
-
-
-
-
 if __name__ == '__main__':
     app.run()
