@@ -4,14 +4,23 @@
 # Maintain(Minchul, wow@suwon.ac.kr)
 #======================================
 from flask import Flask, request, jsonify
-
+from answer import *
 app = Flask(__name__)
-
-
+# ----- INTERFACE ------
+def getAnswer(question):
+    url = 'https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/{my-key}/generateAnswer'
+    headers = {'Content-Type':'application/json; charset=utf-8',
+                'Ocp-Apim-Subscription-Key':'{hidden}'}
+    data = json.dumps({"question": question})
+    r = requests.post(url, headers=headers, data=data)
+    rjson = json.loads(r.text)
+    answer = rjson.get('answers')[0]['answer']
+    return answer
+# ----- MAIN PAGE -----
 @app.route('/')
 def hello_world():
     return 'Hello World!'
-
+# ----- SINEAGE ------
 @app.route('/keyboard')
 def Keyboard():
     dataSend = {
@@ -19,7 +28,7 @@ def Keyboard():
         "buttons": ["안녕하세요"]
     }
     return jsonify(dataSend)
-
+# ----- MSG PASSED BY AZURE -----
 @app.route('/message', methods=['POST'])
 def Message():
     dataReceive = request.get_json()
@@ -30,15 +39,6 @@ def Message():
     return jsonify(dataSend)
 
 
-def getKeybyQuestion(Question):
-    answermap={
-        "처음으로 돌아가기":"q",
-        "q1":"데이터사이언스, 머신러닝이 궁금해요",
-        "q1a":"빅데이터가 무엇인가요?",
-        "q1b":"기계학습(Machine Learning)이 무엇인가요?",
-        "q1c":"데이터 과학은 무엇인가요?"
-    }
-    return answermap.get(Question)
 
 
 if __name__ == '__main__':
