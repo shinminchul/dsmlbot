@@ -1,3 +1,8 @@
+# =====================================
+# DSML Chatbot 2017
+# Author(Minchul,Taekyung)
+# Maintain(Minchul, wow@suwon.ac.kr)
+#======================================
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
