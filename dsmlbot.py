@@ -6,10 +6,10 @@
 from flask import Flask, request, jsonify
 from answer import *
 main_msg={"type":"buttons","buttons":[
-    AboutAnswer.answer_marker,
-    ProgramAnswer.answer_marker,
-    InfoAnswer.answer_marker,
-    FunAnswer.answer_marker]}
+    AboutAnswer("").answer_marker,
+    ProgramAnswer("").answer_marker,
+    InfoAnswer("").answer_marker,
+    FunAnswer("").answer_marker]}
 app = Flask(__name__)
 # ----- INTERFACE ------
 def getAnswer(question):
@@ -43,4 +43,4 @@ def Message():
         dataSend=main_msg
     return jsonify(dataSend)
 if __name__ == '__main__':
-    app.run()
+    app.run(host="0.0.0.0",port=4000)
