@@ -6,6 +6,9 @@
 from flask import Flask, request, jsonify
 import requests,json
 from answer import *
+import html.parser
+from auth import *
+
 main_msg={"type":"buttons","buttons":[
     AboutAnswer("").answer_marker,
     ProgramAnswer("").answer_marker,
@@ -19,13 +22,14 @@ main_msg2={"message":{"text":"다시 선택해 주세요."},"keyboard":{"type":"
 app = Flask(__name__)
 # ----- INTERFACE ------
 def getAnswer(question):
-    url = 'https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/{my-key}/generateAnswer'
+    url = 'https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/'+api+'/generateAnswer'
     headers = {'Content-Type':'application/json; charset=utf-8',
-                'Ocp-Apim-Subscription-Key':'{hidden}'}
+                'Ocp-Apim-Subscription-Key':key}
     data = json.dumps({"question": question})
     r = requests.post(url, headers=headers, data=data)
     rjson = json.loads(r.text)
     answer = rjson.get('answers')[0]['answer']
+    answer = html.parser.HTMLParser().unescape(answer)
     return answer
 # ----- MAIN PAGE -----
 @app.route('/')
@@ -42,6 +46,7 @@ def Message():
     content = dataReceive['content']
     sign_board_1=[AboutAnswer(content),ProgramAnswer(content),InfoAnswer(content),FunAnswer(content)]
     check_1=list(map(lambda x:x.evaluate(),sign_board_1))
+    print(check_1)
     try:
         obj = sign_board_1[check_1.index(True)]
         dataSend=obj.send_keyboard(getAnswer(obj.answer_marker))
