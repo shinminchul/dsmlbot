@@ -35,7 +35,7 @@ def Message():
     dataReceive = request.get_json()
     content = dataReceive['content']
     sign_board_1=[AboutAnswer(content),ProgramAnswer(content),InfoAnswer(content),FunAnswer(content)]
-    check_1=list(lambda x:x.evaluate(),sign_board_1)
+    check_1=list(map(lambda x:x.evaluate(),sign_board_1))
     try:
         obj = sign_board_1[check_1.index(True)]
         dataSend=obj.send_keyboard(getAnswer(obj.answer_marker))
