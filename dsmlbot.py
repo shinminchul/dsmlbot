@@ -6,10 +6,10 @@
 from flask import Flask, request, jsonify
 from answer import *
 main_msg={"type":"buttons","buttons":[
-    AboutAnswer.answer_marker,
-    ProgramAnswer.answer_marker,
-    InfoAnswer.answer_marker,
-    FunAnswer.answer_marker]}
+    AboutAnswer().answer_marker,
+    ProgramAnswer().answer_marker,
+    InfoAnswer().answer_marker,
+    FunAnswer().answer_marker]}
 app = Flask(__name__)
 # ----- INTERFACE ------
 def getAnswer(question):
