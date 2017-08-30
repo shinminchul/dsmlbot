@@ -51,7 +51,8 @@ def Message():
         dataSend=obj.send_keyboard(getAnswer(obj.answer_marker))
     except ValueError:
         user_msg=getAnswer(content)
-        dataSend=main_msg2['message']['text']=user_msg
+        main_msg2['message']['text']=user_msg
+        dataSend=main_msg2
     return jsonify(dataSend)
 if __name__ == '__main__':
     app.run(host="0.0.0.0",port=4000)
