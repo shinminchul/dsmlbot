@@ -5,11 +5,11 @@
 #======================================
 from flask import Flask, request, jsonify
 from answer import *
-main_msg={"message":{"text":"무엇이 궁금하세요?"},"keyboard":{"type":"buttons","buttons":[
+main_msg={"type":"buttons","buttons":[
     AboutAnswer.answer_marker,
     ProgramAnswer.answer_marker,
     InfoAnswer.answer_marker,
-    FunAnswer.answer_marker]}}
+    FunAnswer.answer_marker]}
 app = Flask(__name__)
 # ----- INTERFACE ------
 def getAnswer(question):
