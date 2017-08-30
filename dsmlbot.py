@@ -1,40 +1,46 @@
+# =====================================
+# DSML Chatbot 2017
+# Author(Minchul,Taekyung)
+# Maintain(Minchul, wow@suwon.ac.kr)
+#======================================
 from flask import Flask, request, jsonify
-
+from answer import *
+main_msg={"message":{"text":"무엇이 궁금하세요?"},"keyboard":{"type":"buttons","buttons":[
+    AboutAnswer.answer_marker,
+    ProgramAnswer.answer_marker,
+    InfoAnswer.answer_marker,
+    FunAnswer.answer_marker]}}
 app = Flask(__name__)
-
-
+# ----- INTERFACE ------
+def getAnswer(question):
+    url = 'https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/{my-key}/generateAnswer'
+    headers = {'Content-Type':'application/json; charset=utf-8',
+                'Ocp-Apim-Subscription-Key':'{hidden}'}
+    data = json.dumps({"question": question})
+    r = requests.post(url, headers=headers, data=data)
+    rjson = json.loads(r.text)
+    answer = rjson.get('answers')[0]['answer']
+    return answer
+# ----- MAIN PAGE -----
 @app.route('/')
 def hello_world():
     return 'Hello World!'
-
+# ----- SINEAGE ------
 @app.route('/keyboard')
 def Keyboard():
-    dataSend = {
-        "type": "buttons",
-        "buttons": ["안녕하세요"]
-    }
-    return jsonify(dataSend)
-
+    return jsonify(main_msg)
+# ----- MSG PASSED BY AZURE -----
 @app.route('/message', methods=['POST'])
 def Message():
     dataReceive = request.get_json()
-    # 챗봇 구현부
-    
-    
-    #dataSend로 만들어서 보내야 함
+    content = dataReceive['content']
+    sign_board_1=[AboutAnswer(content),ProgramAnswer(content),InfoAnswer(content),FunAnswer(content)]
+    check_1=list(lambda x:x.evaluate(),sign_board_1)
+    try:
+        obj = sign_board_1[check_1.index(True)]
+        dataSend=obj.send_keyboard(getAnswer(obj.answer_marker))
+    except ValueError:
+        dataSend=main_msg
     return jsonify(dataSend)
-
-
-def getKeybyQuestion(Question):
-    answermap={
-        "처음으로 돌아가기":"q",
-        "q1":"데이터사이언스, 머신러닝이 궁금해요",
-        "q1a":"빅데이터가 무엇인가요?",
-        "q1b":"기계학습(Machine Learning)이 무엇인가요?",
-        "q1c":"데이터 과학은 무엇인가요?"
-    }
-    return answermap.get(Question)
-
-
 if __name__ == '__main__':
     app.run()
