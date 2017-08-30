@@ -46,12 +46,12 @@ def Message():
     content = dataReceive['content']
     sign_board_1=[AboutAnswer(content),ProgramAnswer(content),InfoAnswer(content),FunAnswer(content)]
     check_1=list(map(lambda x:x.evaluate(),sign_board_1))
-    print(check_1)
     try:
         obj = sign_board_1[check_1.index(True)]
         dataSend=obj.send_keyboard(getAnswer(obj.answer_marker))
     except ValueError:
-        dataSend=main_msg2
+        user_msg=getAnswer(content)
+        dataSend=main_msg2['message']['text']=user_msg
     return jsonify(dataSend)
 if __name__ == '__main__':
     app.run(host="0.0.0.0",port=4000)
