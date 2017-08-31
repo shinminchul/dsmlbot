@@ -10,15 +10,8 @@ import html.parser
 from auth import *
 
 main_msg={"type":"buttons","buttons":[
-    AboutAnswer("").answer_marker,
-    ProgramAnswer("").answer_marker,
-    InfoAnswer("").answer_marker,
-    FunAnswer("").answer_marker]}
-main_msg2={"message":{"text":"다시 선택해 주세요."},"keyboard":{"type":"buttons","buttons":[
-    AboutAnswer("").answer_marker,
-    ProgramAnswer("").answer_marker,
-    InfoAnswer("").answer_marker,
-    FunAnswer("").answer_marker]}}
+    "hi"}
+main_msg2={"message":{"text":"다시 물어봐 주세요."},"keyboard":{"type":"text"}
 app = Flask(__name__)
 # ----- INTERFACE ------
 def getAnswer(question):
@@ -41,7 +34,7 @@ def Keyboard():
     return jsonify(main_msg)
 # ----- MSG PASSED BY AZURE -----
 @app.route('/message', methods=['POST'])
-def Message():
+def Message():s
     dataReceive = request.get_json()
     content = dataReceive['content']
     sign_board_1=[AboutAnswer(content),ProgramAnswer(content),InfoAnswer(content),FunAnswer(content)]
